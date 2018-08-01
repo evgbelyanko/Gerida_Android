@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=5, viewport-fit=cover" />
+	<style type="text/css">
+		html{
+			overflow-x: hidden;
+		}
+		body {
+			height: 100vh;
+			width: 100vw;
+			background: #f4f0ff;
+			position: absolute;
+			font-family: -apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif;
+			overflow-x: hidden;
+			font-size: 14px;
+			line-height: 1.5;
+			color: #000;
+			margin: 0;
+		}
+		#preload{
+			position: fixed;
+			top: 0;
+			z-index: 99999;
+			background: #fff;
+			height: 100vh;
+			width: 100vw;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			cursor: wait;
+		}
+		#preload_block{
+			background: url(earth.jpg) center center;
+			background-size: 320px;
+			width: 140px;
+			height: 140px;
+			border-radius: 48%;
+			box-shadow: inset 1px 0 20px 5px rgba(0,0,0,1);
+			animation-name: move,scale,rotate;
+			animation-duration: 2s,2s,1.5s;
+			animation-iteration-count: infinite,infinite,infinite;
+			animation-timing-function: linear,linear,linear;
+		}
+		@keyframes rotate {
+			0% { background-position: 0px; }
+			100% { background-position: 320px; }
+		}
+		@-webkit-keyframes load3 {
+			0% {
+				-webkit-transform: rotate(0deg);
+				transform: rotate(0deg);
+			}
+			100% {
+				-webkit-transform: rotate(360deg);
+				transform: rotate(360deg);
+			}
+		}
+		@keyframes load3 {
+			0% {
+				-webkit-transform: rotate(0deg);
+				transform: rotate(0deg);
+			}
+			100% {
+				-webkit-transform: rotate(360deg);
+				transform: rotate(360deg);
+			}
+		}
+		#preload_text{
+			font-family: cursive;
+			font-weight: bold;
+			font-size: 16px;
+			margin-top: 30px;
+		}
+	</style>
+</head>
+<body>
+	<div id="preload">
+		<div id="preload_block"></div>
+		<div id="preload_text">Ошибка сединения с сервером!</div>
+	</div>
+</body>
+</html>
