@@ -64,33 +64,60 @@
         android:layout_width="350dp"
         android:layout_height="370dp"
         android:layout_gravity="center"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="10dp"
         android:orientation="vertical"
-        android:paddingBottom="70dp"
+        android:paddingBottom="0dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:paddingTop="20dp"
         android:visibility="gone">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/textView_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="5dp"
+            android:text="Название к фотографии"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/editText_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:ems="0"
+            android:hint="Название (40 символов)..."
+            android:inputType="text|textMultiLine"
+            android:lines="1"
+            android:maxLength="40"
+            android:maxLines="2"
+            android:padding="20dp"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            tools:background="@android:color/background_light" />
+
+        <TextView
+            android:id="@+id/textView_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="5dp"
             android:text="Описание к фотографии"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/editText_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="0"
-            android:hint="Добавить описание..."
+            android:hint="Описание (250 символов)..."
             android:inputType="text|textMultiLine"
-            android:maxLength="255"
+            android:maxLength="250"
             android:maxLines="4"
+            android:minLines="4"
             android:padding="20dp"
             android:textColor="@android:color/black"
             tools:background="@android:color/background_light" />

@@ -146,14 +146,10 @@ public class MainActivity extends Activity {
 	  * Checking device has camera hardware or not
 	  * */
 	 private boolean isDeviceSupportCamera() {
-		if (getApplicationContext().getPackageManager().hasSystemFeature(
-			PackageManager.FEATURE_CAMERA)) {
-				// this device has a camera
-			return true;
-	 } else {
-				// no camera on this device
-		return false;
-	 }
+		 // this device has a camera
+// no camera on this device
+		 return getApplicationContext().getPackageManager().hasSystemFeature(
+				 PackageManager.FEATURE_CAMERA);
  }
  
 	 /**

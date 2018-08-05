@@ -1,5 +1,8 @@
 package app.gerida;
 
+import java.nio.charset.Charset;
+
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -34,7 +37,6 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 import app.gerida.AndroidMultiPartEntity.ProgressListener;
 
@@ -48,10 +50,12 @@ public class UploadActivity extends Activity {
 	private ImageView imgPreview;
 	private VideoView vidPreview;
 	private String photo_desc = null;
+    private String photo_title = null;
 	private Button btnOK;
 	long totalSize = 0;
 
-	@Override
+	@SuppressLint("ResourceType")
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_upload);
@@ -62,7 +66,8 @@ public class UploadActivity extends Activity {
 		final LinearLayout layoutPhoto = (LinearLayout) findViewById(R.id.layoutPhoto);
 		final LinearLayout layoutDesc = (LinearLayout) findViewById(R.id.layoutDesc);
 		final LinearLayout layoutPercent = (LinearLayout) findViewById(R.id.layoutPercent);
-		final EditText editText = (EditText) findViewById(R.id.editText);
+        final EditText editText_title = (EditText) findViewById(R.id.editText_title);
+		final EditText editText_desc = (EditText) findViewById(R.id.editText_desc);
 		progressBar = (ProgressBar) findViewById(R.id.progressBar);
 		imgPreview = (ImageView) findViewById(R.id.imgPreview);
 		vidPreview = (VideoView) findViewById(R.id.videoPreview);
@@ -113,7 +118,8 @@ public class UploadActivity extends Activity {
 			public void onClick(View v) {
 				layoutPercent.setVisibility(View.VISIBLE);
 				layoutDesc.setVisibility(View.GONE);
-				photo_desc= editText.getText().toString().trim();
+                photo_title = editText_title.getText().toString().trim();
+				photo_desc = editText_desc.getText().toString().trim();
 
 				// uploading the file to server
 				new UploadFileToServer().execute();
@@ -160,7 +166,8 @@ public class UploadActivity extends Activity {
 			super.onPreExecute();
 		}
 
-		@Override
+		@SuppressLint("SetTextI18n")
+        @Override
 		protected void onProgressUpdate(Integer... progress) {
 			// Making progress bar visible
 			progressBar.setVisibility(View.VISIBLE);
@@ -199,12 +206,13 @@ public class UploadActivity extends Activity {
 				// Adding file data to http body
 				entity.addPart("image", new FileBody(sourceFile));
 
-
 				// Extra parameters if you want to pass to server
-				entity.addPart("photo_desc", new StringBody(""+ photo_desc));
-				entity.addPart("latitude", new StringBody(""+MyLocationListener.latitude));
-				entity.addPart("longitude", new StringBody(""+MyLocationListener.longitude));
-				entity.addPart("user_id", new StringBody(""+ MainActivity.USER_ID));
+				Charset charSet = Charset.forName("UTF-8");
+				entity.addPart("photo_title", new StringBody( photo_title, charSet) );
+				entity.addPart("photo_desc", new StringBody( photo_desc, charSet) );
+				entity.addPart("latitude", new StringBody( Double.toString(MyLocationListener.latitude)) );
+				entity.addPart("longitude", new StringBody( Double.toString(MyLocationListener.longitude)) );
+				entity.addPart("user_id", new StringBody( MainActivity.USER_ID) );
 
 				totalSize = entity.getContentLength();
 				httppost.setEntity(entity);
@@ -216,6 +224,7 @@ public class UploadActivity extends Activity {
 				int statusCode = response.getStatusLine().getStatusCode();
 				if (statusCode == 200) {
 					// Server response
+					//responseString = EntityUtils.toString(r_entity,"UTF-8");
 					responseString = EntityUtils.toString(r_entity);
 				} else {
 					responseString = "Error occurred! Http Status Code: "
