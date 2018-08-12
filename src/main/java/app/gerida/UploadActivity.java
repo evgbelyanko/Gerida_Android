@@ -1,5 +1,7 @@
 package app.gerida;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.Charset;
 
 import android.annotation.SuppressLint;
@@ -34,9 +36,6 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-
-import java.io.File;
-import java.io.IOException;
 
 import app.gerida.AndroidMultiPartEntity.ProgressListener;
 
@@ -73,7 +72,6 @@ public class UploadActivity extends Activity {
 		vidPreview = (VideoView) findViewById(R.id.videoPreview);
 
 		ActionBar actionBar = getActionBar();
-		//MyLocationListener.imHere
 
 		// Changing action bar background color
 		actionBar.setBackgroundDrawable(
@@ -243,7 +241,7 @@ public class UploadActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(String result) {
-			Log.e(TAG, "Response from server: " + result);
+			Log.e(TAG, "Ответ сервера: " + result);
 
 			// showing the server response in an alert dialog
 			showAlert(result);
@@ -260,7 +258,7 @@ public class UploadActivity extends Activity {
 	 * */
 	private void showAlert(String message) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(message).setTitle("Response from Servers")
+		builder.setMessage(message).setTitle("Ответ сервера:")
 				.setCancelable(false)
 				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {

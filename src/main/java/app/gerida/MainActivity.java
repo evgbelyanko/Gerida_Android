@@ -54,10 +54,13 @@ public class MainActivity extends Activity {
 		web.getSettings().setDomStorageEnabled(true);
 		web.getSettings().setDefaultTextEncodingName("utf-8");
 		web.getSettings().setLoadWithOverviewMode(true);
+		web.getSettings().setAllowFileAccess(true);
 		web.getSettings().setAllowContentAccess(true);
 		web.getSettings().setUseWideViewPort(true);
+		web.getSettings().setAppCacheMaxSize( 5 * 1024 * 1024 ); // 5MB
+        web.getSettings().setAppCachePath( getApplicationContext().getCacheDir().getAbsolutePath() );
+        web.getSettings().setAppCacheEnabled( true );
 		web.setWebViewClient(new WebViewClient() {
-
 			public void onPageStarted(WebView web, String url) {
 			}
 			// Выполнение после загрузки страницы
@@ -131,14 +134,13 @@ public class MainActivity extends Activity {
 			if(MyLocationListener.longitude == 0.0 || MyLocationListener.latitude == 0.0){
 				Toast.makeText(getApplicationContext(),
 					"Включите местоположение",
-					Toast.LENGTH_LONG).show();
+					100).show();
 			} else {
 				captureImage();
 			}
 		}
 		@JavascriptInterface
 		public void onDataUserID(String value) {
-				// value = 'Hello World'
 			USER_ID = value;
 		}
 	 }

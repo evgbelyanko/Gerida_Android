@@ -8,10 +8,11 @@ import android.os.Bundle;
 
 class MyLocationListener implements LocationListener {
 
-    static Location imHere; // здесь будет всегда доступна самая последняя информация о местоположении пользователя.
+    //static Location imHere; // здесь будет всегда доступна самая последняя информация о местоположении пользователя.
     public static double longitude = 0;
     public static double latitude = 0;
-    public static boolean workGPS;
+    //public static boolean workGPS;
+    public static String statusLoc;
 
     public static void SetUpLocationListener(Context context) // это нужно запустить в самом начале работы программы
     {
@@ -22,17 +23,17 @@ class MyLocationListener implements LocationListener {
 
         locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
-                1000,
-                5,
-                locationListener); // здесь можно указать другие более подходящие вам параметры
+                0, // Задержка (миллисекунды)
+                5, // Количество метров для обновления
+                locationListener);
 
-        imHere = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        workGPS = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        //imHere = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        //workGPS = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
     @Override
     public void onLocationChanged(Location loc) {
-        imHere = loc;
+        //imHere = loc;
         longitude = loc.getLongitude();
         latitude = loc.getLatitude();
     }

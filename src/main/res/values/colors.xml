@@ -6,5 +6,7 @@
     <color name="white">#fff</color>
     <color name="txt_font">#000</color>
     <color name="action_bar">#1d2127</color>
+    <color name="accent_material_light_1">#f5f5f5</color>
+    <color name="background_material_light_1">#f5f5f5</color>
 
 </resources>
