@@ -45,6 +45,7 @@ public class MainActivity extends Activity {
 	 @Override
 	 protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		 MyLocationListener.SetUpLocationListener(this);
 		setContentView(R.layout.activity_main);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		
@@ -96,8 +97,6 @@ public class MainActivity extends Activity {
 		web.addJavascriptInterface(new JSInterface(), "android");
 		web.loadUrl(Config.SERVER_URL);
 
-		MyLocationListener.SetUpLocationListener(this);
-
 		View decorView = getWindow().getDecorView();
 		int uiOptions = View.SYSTEM_UI_FLAG_IMMERSIVE;
 		decorView.setSystemUiVisibility(uiOptions);
@@ -131,6 +130,9 @@ public class MainActivity extends Activity {
 	 public class JSInterface {
 		@JavascriptInterface
 		public void loadCaptureImage() {
+/*			Toast.makeText(getApplicationContext(),
+					"+"+MyLocationListener.statusLoc,
+					100).show();*/
 			if(MyLocationListener.longitude == 0.0 || MyLocationListener.latitude == 0.0){
 				Toast.makeText(getApplicationContext(),
 					"Включите местоположение",

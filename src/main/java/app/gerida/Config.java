@@ -1,7 +1,7 @@
 package app.gerida;
 
 public class Config {
-	public static final String SERVER_URL = "https://creptos.com";
+	public static final String SERVER_URL = "http://gerida.ru";
 	// File upload url (replace the ip with your server address)
 	public static final String FILE_UPLOAD_URL = SERVER_URL+"/dev/camera/UploadPicture.php";
 	
