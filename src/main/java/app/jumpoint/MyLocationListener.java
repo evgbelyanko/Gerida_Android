@@ -1,4 +1,4 @@
-package app.gerida;
+package app.jumpoint;
 
 import android.content.Context;
 import android.location.Location;

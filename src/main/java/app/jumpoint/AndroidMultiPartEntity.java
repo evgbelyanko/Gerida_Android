@@ -1,4 +1,4 @@
-package app.gerida;
+package app.jumpoint;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;

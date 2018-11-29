@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="app.gerida"
+    package="app.jumpoint"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -35,7 +35,7 @@
         </activity>
 
         <activity
-            android:name="app.gerida.UploadActivity"
+            android:name="app.jumpoint.UploadActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.WithActionBar">
         </activity>

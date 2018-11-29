@@ -1,4 +1,4 @@
-package app.gerida;
+package app.jumpoint;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
@@ -15,7 +15,10 @@ import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.webkit.WebChromeClient;
+import android.webkit.ValueCallback;
 import android.widget.Toast;
+import android.database.Cursor;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -36,14 +39,21 @@ public class MainActivity extends Activity {
 	public static final int MEDIA_TYPE_IMAGE = 1;
 	public static final int MEDIA_TYPE_VIDEO = 2;
 
-	 private Uri fileUri; // file url to store image/video
+	public static final String USER_AGENT = "Mozilla/5.0 (Linux; Android 4.1.1; Galaxy Nexus Build/JRO03C) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19";
+
+	private Uri fileUri; // file url to store image/video
+
+	private static final int SELECT_AVATAR = 1;
+
+	private ValueCallback<Uri> mCallback;
+	private ValueCallback<Uri[]> mArrayCallback;
 	 
 	 //private Button btnCapturePicture, btnRecordVideo;
-	 private WebView web;
+	private WebView web;
 
-	 @SuppressLint("JavascriptInterface")
-	 @Override
-	 protected void onCreate(Bundle savedInstanceState) {
+	@SuppressLint("JavascriptInterface")
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		 MyLocationListener.SetUpLocationListener(this);
 		setContentView(R.layout.activity_main);
@@ -59,34 +69,51 @@ public class MainActivity extends Activity {
 		web.getSettings().setAllowContentAccess(true);
 		web.getSettings().setUseWideViewPort(true);
 		web.getSettings().setAppCacheMaxSize( 5 * 1024 * 1024 ); // 5MB
-        web.getSettings().setAppCachePath( getApplicationContext().getCacheDir().getAbsolutePath() );
-        web.getSettings().setAppCacheEnabled( true );
+		web.getSettings().setAppCachePath( getApplicationContext().getCacheDir().getAbsolutePath() );
+		web.getSettings().setAppCacheEnabled( true );
+		web.getSettings().setUserAgentString(USER_AGENT);
 		web.setWebViewClient(new WebViewClient() {
 			public void onPageStarted(WebView web, String url) {
 			}
 			// Выполнение после загрузки страницы
 			public void onPageFinished(WebView web, String url) {
-                //web.loadUrl("javascript: file:///android_asset/script.js");
-                web.loadUrl("javascript: " +
-								"window.myDevice = 'mobile'; " +
-								"window.myDeviceOS = 'android'; " +
-								"android.onDataUserID(app.id);"
-                );
+				//web.loadUrl("javascript: file:///android_asset/script.js");
+				web.loadUrl("javascript: " +
+								"localStorage.device = 'mobile'; " +
+								"localStorage.deviceOS = 'android'; " +
+								"android.onDataUserID(localStorage.userId);"
+				);
 			}
 			@Override
 			public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
 				Config.PAGE_ERROR = 1;
-			    web.loadUrl("file:///android_asset/error.html");
+				web.loadUrl("file:///android_asset/error.html");
 
 			}
 			// Проверка URL после клика
 			// Открывает браузер, если это не приложение и не авторизация вк
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView webView, String url) {
-	 		// все ссылки, в которых содержится домен
-	 		// будут открываться внутри приложения
-				if ( url.contains(Config.SERVER_URL) || url.contains("https://login.vk.com")|| url.contains("https://oauth.vk.com") ){
-					return false;
+			// все ссылки, в которых содержится домен
+			// будут открываться внутри приложения
+				String[] allowUrls = {
+						Config.SERVER_URL,
+						Config.CLIENT_URL,
+						"https://login.vk.com",
+						"https://oauth.vk.com",
+						"https://m.facebook.com/v3",
+						"https://facebook.com/dialog",
+						"https://m.facebook.com/dialog",
+						"https://facebook.com/login.php",
+						"https://m.facebook.com/login.php",
+						"https://accounts.google.com",
+						"https://accounts.youtube.com"
+				};
+
+				for (int i = 0; i < allowUrls.length; i++) {
+					if(url.contains(allowUrls[i])){
+						return false;
+					}
 				}
 				// все остальные ссылки будут спрашивать какой браузер открывать
 				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
@@ -94,8 +121,41 @@ public class MainActivity extends Activity {
 				return true;
 			}
 		});
+
+		web.setWebChromeClient(new WebChromeClient() {
+			@Override
+			public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> callback, WebChromeClient.FileChooserParams fileChooserParams) {
+				runFileChooser(null, callback);
+				return true;
+			}
+
+			@SuppressWarnings("unused")
+			public void openFileChooser(ValueCallback<Uri> callback, String accept, String capture) {
+				this.openFileChooser(callback);
+			}
+
+			@SuppressWarnings("unused")
+			public void openFileChooser(ValueCallback<Uri> callback, String accept) {
+				this.openFileChooser(callback);
+			}
+
+			public void openFileChooser(ValueCallback<Uri> callback) {
+				runFileChooser(callback, null);
+			}
+
+			public void runFileChooser(ValueCallback<Uri> callback, ValueCallback<Uri[]> arrayCallback) {
+				mCallback = callback;
+				mArrayCallback = arrayCallback;
+				Intent intent = new Intent();
+				intent.setType("image/*");
+				intent.setAction(Intent.ACTION_GET_CONTENT);
+				startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_AVATAR);
+			}
+
+		});
+
 		web.addJavascriptInterface(new JSInterface(), "android");
-		web.loadUrl(Config.SERVER_URL);
+		web.loadUrl(Config.SERVER_ADDR);
 
 		View decorView = getWindow().getDecorView();
 		int uiOptions = View.SYSTEM_UI_FLAG_IMMERSIVE;
@@ -117,14 +177,14 @@ public class MainActivity extends Activity {
 				//finish();
 		}
 	 }
-	    // Активация кнопки назад
+		// Активация кнопки назад
 		@Override
 		public void onBackPressed() {
-		    if (web.canGoBack() && Config.PAGE_ERROR == 0) {
-		        web.goBack();
-		    } else {
-                super.onBackPressed();
-            }
+			if (web.canGoBack() && Config.PAGE_ERROR == 0) {
+				web.goBack();
+			} else {
+				super.onBackPressed();
+			}
 		}
 
 	 public class JSInterface {
@@ -155,6 +215,22 @@ public class MainActivity extends Activity {
 		 return getApplicationContext().getPackageManager().hasSystemFeature(
 				 PackageManager.FEATURE_CAMERA);
  }
+
+		public String getPath(Uri uri) {
+			if (uri == null) {
+				return "";
+			}
+			String[] projection = {MediaStore.Images.Media.DATA};
+			Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+			if (cursor != null) {
+				int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+				cursor.moveToFirst();
+				String path = cursor.getString(column_index);
+				cursor.close();
+				return path;
+			}
+			return uri.getPath();
+		}
  
 	 /**
 	  * Launching camera app to capture image
@@ -257,6 +333,16 @@ public class MainActivity extends Activity {
 				Toast.makeText(getApplicationContext(),
 					"Не удалось записать видео!", Toast.LENGTH_SHORT)
 				.show();
+			}
+		} else if (requestCode == SELECT_AVATAR) {
+			if (resultCode == RESULT_OK) {
+				Uri selectedImageUri = data.getData();
+				String pixPath = getPath(selectedImageUri);
+				if (mCallback != null) {
+					mCallback.onReceiveValue(Uri.parse("file://" + pixPath));
+				} else if (mArrayCallback != null) {
+					mArrayCallback.onReceiveValue(new Uri[]{Uri.parse("file://" + pixPath)});
+				}
 			}
 		}
 	 }

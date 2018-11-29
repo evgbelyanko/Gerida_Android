@@ -14,7 +14,7 @@ android {
         exclude 'META-INF/ASL2.0'
     }
     defaultConfig {
-        applicationId "app.gerida"
+        applicationId "app.jumpoint"
         minSdkVersion 21
         targetSdkVersion 21
         multiDexEnabled true

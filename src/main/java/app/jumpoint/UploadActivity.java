@@ -1,4 +1,4 @@
-package app.gerida;
+package app.jumpoint;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +37,7 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-import app.gerida.AndroidMultiPartEntity.ProgressListener;
+import app.jumpoint.AndroidMultiPartEntity.ProgressListener;
 
 public class UploadActivity extends Activity {
 	// LogCat tag
@@ -202,7 +202,7 @@ public class UploadActivity extends Activity {
 				File sourceFile = new File(filePath);
 
 				// Adding file data to http body
-				entity.addPart("image", new FileBody(sourceFile));
+				entity.addPart("file", new FileBody(sourceFile));
 
 				// Extra parameters if you want to pass to server
 				Charset charSet = Charset.forName("UTF-8");
@@ -215,18 +215,16 @@ public class UploadActivity extends Activity {
 				totalSize = entity.getContentLength();
 				httppost.setEntity(entity);
 
-				// Making server call
+				
 				HttpResponse response = httpclient.execute(httppost);
 				HttpEntity r_entity = response.getEntity();
 
 				int statusCode = response.getStatusLine().getStatusCode();
 				if (statusCode == 200) {
 					// Server response
-					//responseString = EntityUtils.toString(r_entity,"UTF-8");
 					responseString = EntityUtils.toString(r_entity);
 				} else {
-					responseString = "Error occurred! Http Status Code: "
-							+ statusCode;
+					responseString = "Error occurred! Http Status Code: " + statusCode;
 				}
 
 			} catch (ClientProtocolException e) {
@@ -239,12 +237,12 @@ public class UploadActivity extends Activity {
 
 		}
 
+		// SERVER RESPONSE
 		@Override
 		protected void onPostExecute(String result) {
-			Log.e(TAG, "Ответ сервера: " + result);
+			//Log.e(TAG, "Ответ сервера: " + result);
 
-			// showing the server response in an alert dialog
-			showAlert(result);
+			//showAlert(result);
 
 			btnOK.setVisibility(View.VISIBLE);
 
